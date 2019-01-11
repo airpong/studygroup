@@ -1,40 +1,39 @@
-from itertools import permutations
-import time
+def DFS(pos,result):
+    global number
+    global oper
+    global result_max
+    global result_min
+    if pos>=len(number):
+        if result>result_max:
+            result_max=result
+        if result<result_min:
+            result_min=result
+        return
+    else :
+        for i in range(4):
+            tmpresult=result
+            if oper[i]>0:
+                if i==0 :
+                    tmpresult=result+number[pos]
+                elif i==1 :
+                    tmpresult=result-number[pos]
+                elif i==2 :
+                    tmpresult = result*number[pos]
+                elif i==3 :
+                    tmpresult = int(result/number[pos])
+                else :
+                    print("오퍼레이션 인덱션 잘못됨")
+                oper[i]=oper[i]-1
+                DFS(pos+1,tmpresult)
+                oper[i]=oper[i]+1
+
 casesize = int(input())
 for i in range(casesize):
-    numsize = int(input())
-    opercount = input().split()
-    nums = list(map(int,input().split()))
-    start_time = time.time()
-    oper = {'+':0,'-':0,'*':0,'/':0}
-    operlist = []
-
-    for key,i in zip(oper,range(4)):
-        oper[key]=int(opercount[i])
-    for operater in oper:
-        for i in range(oper[operater]):
-            operlist.append(operater)
-    Maxofcase = -10000
-    Minofcase = 10000
-        # 숫자 조합중 하나
-    for op in set(permutations(operlist)):   #연산자 조합중 하나
-        tmpnum=nums.copy()
-        for onething in op:
-            if onething == '+':
-                tmpnum[0]=tmpnum[0]+tmpnum[1]
-                tmpnum.pop(1)
-            elif onething == '-':
-                tmpnum[0]=tmpnum[0]-tmpnum[1]
-                tmpnum.pop(1)
-            elif onething == '*':
-                tmpnum[0]=tmpnum[0]*tmpnum[1]
-                tmpnum.pop(1)
-            elif onething == '/':
-                tmpnum[0]=int(tmpnum[0]/tmpnum[1])
-                tmpnum.pop(1)
-        if tmpnum[0]>Maxofcase:
-            Maxofcase=tmpnum[0]
-        if tmpnum[0]<Minofcase:
-            Minofcase=tmpnum[0]
-    print(f'#{i+1} {Maxofcase-Minofcase}')
-print("--- %s seconds ---" %(time.time() - start_time))
+    count_number = int(input())
+    oper = list(map(int,input().split()))
+    number = list(map(int,input().split()))
+    result=number[0]
+    result_max=-1000000
+    result_min=1000000
+    DFS(1,result)
+    print(f'#{i+1} {result_max-result_min}')
