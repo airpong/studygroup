@@ -1,27 +1,6 @@
 def charge(userA,userB,bclist):
     global result
-    already = 1000
-    for man in range(2):
-        if man == 0:
-            user = userA
-        else :
-            user = userB
-        Max = 0
-        for bc in range(len(bclist)):
-            if bc == already:
-                continue
-            else :
-                # print(f'{man}사람이 여기옴. 현재위치는 ({user[0]},{user[1]})')
-                if check(user,bclist[bc]):
-
-                    print(man,user[0],user[1],bc+1,result,sep=" --- ")
-                    # print("여기옴!!!")
-                    if bclist[bc][3]>Max:
-                        Max = bclist[bc][3]
-                        already = bc
-                        print("현재 최대는",Max,"할당",already)
-        result += Max
-        print("현재까지결과값",result)
+    
 def check(user,bclist):
     # print(abs(bclist[0]-user[0])+abs(bclist[1]-user[1]),bclist[2],"진짜 안된단 말야?")
     if abs(bclist[0]-user[0])+abs(bclist[1]-user[1]) <= bclist[2]:
