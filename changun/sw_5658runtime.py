@@ -3,7 +3,7 @@ for i in range(case_size):
     info = list(map(int,input().split()))
     number = input()
     intlst = []
-    for j in range(3):
+    for j in range(int(info[0]/4)):
         if j != 0:
             number=number[-1]+number[:-1]
         else :
