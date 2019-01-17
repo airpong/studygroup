@@ -21,6 +21,4 @@ casesize=int(input())
 for i in range(casesize):
     caseinfo=list(map(int,input().split()))
     honeys=[list(map(int,input().split())) for i in range(caseinfo[0])]
-    print(colmax()
-
-            
+    print(colmax())
