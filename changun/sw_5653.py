@@ -1,9 +1,9 @@
 def caseinput(caseArr,startArr,x,y,k,candidate):        #최종배열에 초기배열 반영 함수
     for i in range(k,k+x):
         for j in range(k,k+y):
-            caseArr[i][j]=(startArr[i-k][j-k],startArr[i-k][j-k],1)
+            caseArr[i][j]=[startArr[i-k][j-k],startArr[i-k][j-k],1]
             if caseArr[i][j][0]!=0:
-                candidate.append((i,j))
+                candidate.append([i,j])
 
 def solve(candidate,caseArr,tmpcandidate,tmpdeleted):      #후보군 검사+확장을 포함하는 함수
     for i in range(len(candidate)):
@@ -36,11 +36,11 @@ def expand(x,y,life,caseArr,tmpcandidate):      #확장 시키는 함수. flag=0
         if caseArr[x+col][y][2]==0:
             continue
         elif caseArr[x+col][y][0]==0 and caseArr[x+col][y][1]==0:
-            caseArr[x+col][y]=(life,life,1)
-            tmpcandidate.append((x+col,y,1))
+            caseArr[x+col][y]=[life,life,1]
+            tmpcandidate.append([x+col,y,1])
         elif (x+col,y,1) in tmpcandidate:
             if life>caseArr[x+col][y][0]:
-                caseArr[x+col][y]=(life,life,1)
+                caseArr[x+col][y]=[life,life,1]
     for row in range(-1,2,2):
         if caseArr[x][y+row][2]==0:
             continue
@@ -57,7 +57,7 @@ CS=int(input())
 for case in range(CS):
     caseinfo = list(map(int,input().split()))       #caseinfo = [세로,가로,반복횟수]
     startArr = [list(map(int,input().split())) for i in range(caseinfo[0])]     #초기 시작 배열
-    caseArr = [(0,0,1)*(2*caseinfo[2]+caseinfo[0]) for i in range(2*caseinfo[2]+caseinfo[1])]       #시행횟수를 고려한 충분히 큰 최종 배열 각 위치에 (생명력수치,생명력수치,flag) 가 들어가게 된다.
+    caseArr = [[[0,0,1] for i in range((2*caseinfo[2]+caseinfo[0]))] for i in range(2*caseinfo[2]+caseinfo[1])]       #시행횟수를 고려한 충분히 큰 최종 배열 각 위치에 (생명력수치,생명력수치,flag) 가 들어가게 된다.
     candidate = []      #활성+비활성 세포의 집합
     caseinput(caseArr,startArr,caseinfo[0],caseinfo[1],caseinfo[2],candidate)        
     for i in range(caseinfo[2]):
