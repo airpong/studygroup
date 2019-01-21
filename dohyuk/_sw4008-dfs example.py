@@ -33,7 +33,7 @@ def dfs(time,result,pre_operand) :
 
 
 for a in range(int(input())) : #총 테스트 케이스의 개수 T
-    n = int(input())
+    n= int(input())
     pre_operand = list(map(int,input().split()))
     num = list(map(int,input().split()))
     my_max = -9999
