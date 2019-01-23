@@ -16,3 +16,4 @@ for a in range(int(input())) : #총 테스트 케이스의 개수 T
     my_min = bill[3]
     dfs(1,0)
     print(f'#{a+1} {my_min}')
+    #testst
