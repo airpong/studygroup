@@ -1,80 +1,165 @@
-import copy
-def DFS(Arr,lst,idx,N,core,distance):
-    global maxnode
-    global mindistance
-    flag=0
-    if not lst:
-        pass
-    else:    
-        for direction in range(4):
-            tmpArr=copy.deepcopy(Arr)
-            connectResult=connectline(tmpArr,lst[idx],direction,N,distance)
-            if connectResult[0]:
-                distance=connectResult[1]
-                core+=1
-                flag=1
-                tmplst=copy.deepcopy(lst)
-                del tmplst[idx]
-                for i in range(len(tmplst)):
-                    tmptmplst=copy.deepcopy(tmplst)
-                    DFS(tmpArr,tmptmplst,i,N,core,distance)
-    if flag==0:
-        if core>=maxnode:
-            if distance<mindistance:
-                maxnode=core
-                mindistance=distance
+class core():       #core 클래스 해당 코어와 연결가능한 가지의 리스트 속성을 가지고있음
+    def __init__(self,x,y):
+        self.col=x
+        self.row=y
+        self.linkedLine=[]
 
-def connectline(arr,lst,direction,N,distance):
-    if direction==0:
-        count=0
-        for i in range(lst[0]):
-            if arr[i][lst[1]]==0:
-                arr[i][lst[1]]=-1
-                count+=1
-                continue
-            else:
-                return False,distance
-    elif direction==1:
-        count=0
-        for i in range(lst[1]+1,N):
-            if arr[lst[0]][i]==0:
-                arr[lst[0]][i]=-1
-                count+=1
-                continue
-            else:
-                return False,distance
-    elif direction==2:
-        count=0
-        for i in range(lst[0]+1,N):
-            if arr[i][lst[1]]==0:
-                arr[i][lst[1]]=-1
-                count+=1
-                continue
-            else:
-                return False,distance
-    elif direction==3:
-        count=0
-        for i in range(lst[1]):
-            if arr[lst[0]][i]==0:
-                arr[lst[0]][i]=-1
-                count+=1
-                continue
-            else:
-                return False,distance
-    return (True, distance+count)
+class line():       #선 클래스/코어의 위치, 길이, 내 번호, 연결 불가능한 가지의 리스트
+    count=0
+    def __init__(self,x,y,direct,LEN):
+        self.mydirection=direct
+        self.mynum=line.count
+        self.col=x
+        self.row=y
+        self.distance=LEN
+        self.linkedOther = []
+        line.count+=1
 
-CS = int(input())
-for case in range(CS):  
-    lst = []
-    maxnode=0
-    mindistance=1000
-    caseinfo=int(input())
-    caseArr=[list(map(int,input().split())) for i in range(caseinfo)]
-    for i in range(1,caseinfo):
-        for j in range(1,caseinfo):
-            if caseArr[i][j]==1:
-                lst.append([i,j])
-    print(lst)
-    for idx in range(len(lst)):
-        DFS(caseArr,lst,idx,caseinfo,0,0)
-    print(mindistance)
+def solve(cores,lst,pos,corenum,alldistance):
+    global Maxcore
+    global Mindistance
+    if pos>=len(cores):
+        if corenum>Maxcore:
+            Maxcore=corenum
+            Mindistance=alldistance
+            # if alldistance<Mindistance:
+        elif corenum==Maxcore:
+            if alldistance<Mindistance:
+                Mindistance=alldistance
+        return
+    # print("a",pos,len(cores[pos].linkedLine))
+    for line in range(len(cores[pos].linkedLine)+1):      #+1넣어라
+        # print(pos,line)
+        if line == len(cores[pos].linkedLine):
+            solve(cores,lst,pos+1,corenum,alldistance)
+        else:
+            flag = 0
+            for noise in cores[pos].linkedLine[line].linkedOther:
+                if noise in lst:
+                    flag=1
+                    break
+            if flag==1:
+
+                continue
+            else:
+                lst.append(cores[pos].linkedLine[line].mynum)
+                corenum+=1
+                alldistance+=cores[pos].linkedLine[line].distance
+                # if lst[0]==0:
+                #     print(lst,corenum,alldistance)
+                solve(cores,lst,pos+1,corenum,alldistance)
+                corenum-=1
+                alldistance-=cores[pos].linkedLine[line].distance
+                lst.pop()
+def link(coreList,lineList):
+    for core in coreList:
+        for i in range(0,core.col+1):
+            if i==core.col:
+                tmp=line(core.col,core.row,0,i)
+                core.linkedLine.append(tmp)
+                lineList.append(tmp)
+            elif caseArr[i][core.row]==0:
+                continue
+            else:
+                break
+        for i in range(core.col+1,N+1):
+            if i==N:
+                tmp=line(core.col,core.row,2,N-core.col-1)
+                core.linkedLine.append(tmp)
+                lineList.append(tmp)
+            elif caseArr[i][core.row]==0:
+                continue
+            else:
+                break
+        for i in range(0,core.row+1):
+            if i==core.row:
+                tmp=line(core.col,core.row,3,i)
+                core.linkedLine.append(tmp)
+                lineList.append(tmp)
+            elif caseArr[core.col][i]==0:
+                continue
+            else:
+                break
+        for i in range(core.row+1,N+1):
+            if i==N:
+                tmp=line(core.col,core.row,1,N-core.row-1)
+                core.linkedLine.append(tmp)
+                lineList.append(tmp)
+            elif caseArr[core.col][i]==0:
+                continue
+            else:
+                break
+
+def checkline(lineList):
+    for line in lineList:
+         for checkline in lineList:
+            if line.mynum==checkline.mynum:
+                continue
+            else :
+                if line.mydirection%2==checkline.mydirection%2:
+                    continue
+                else:
+                    if line.mydirection==0:
+                        if checkline.mydirection==1:
+                            if checkline.col<line.col:
+                                if checkline.row<line.row:
+                                    line.linkedOther.append(checkline.mynum)
+                        if checkline.mydirection==3:
+                            if checkline.col<line.col:
+                                if checkline.row>line.row:
+                                    line.linkedOther.append(checkline.mynum)
+                    if line.mydirection==1:
+                        if checkline.mydirection==0:
+                            if checkline.row>line.row:
+                                if checkline.col>line.col:
+                                    line.linkedOther.append(checkline.mynum)
+                        if checkline.mydirection==2:
+                            if checkline.row>line.row:
+                                if checkline.col<line.col:
+                                    line.linkedOther.append(checkline.mynum)
+                    if line.mydirection==2:
+                        if checkline.mydirection==1:
+                            if checkline.row<line.row:
+                                if checkline.col>line.col:
+                                    line.linkedOther.append(checkline.mynum)
+                        if checkline.mydirection==3:
+                            if checkline.row>line.row:
+                                if checkline.col>line.col:
+                                    line.linkedOther.append(checkline.mynum)
+                    if line.mydirection==3:
+                        if checkline.mydirection==0:
+                            if checkline.row<line.row:
+                                if checkline.col>line.col:
+                                    line.linkedOther.append(checkline.mynum)
+                        if checkline.mydirection==2:
+                            if checkline.row<line.row:
+                                if checkline.col<line.col:
+                                    line.linkedOther.append(checkline.mynum)
+
+
+casesize=int(input())
+for case in range(casesize):
+    Maxcore=0
+    Mindistance=100000
+    N = int(input())
+    caseArr = [list(map(int,input().split())) for i in range(N)]
+    coreList=[]
+    for col in range(1,N-1):
+        for row in range(1,N-1):
+            if caseArr[col][row]!=0:
+                coreList.append(core(col,row))
+    lineList = []
+    link(coreList,lineList)
+    checkline(lineList)
+    # for core in coreList:
+    #     print("--",core.col,core.row)
+    #     for line in core.linkedLine:
+    #         print(line.mynum,line.mydirection,line.linkedOther,line.distance)
+
+    nowlinked=[]
+    solve(coreList,nowlinked,0,0,0)
+    # for line in lineList:
+    #     print("line",line.mynum)
+    #     for linked in line.linkedOther:
+    #         print(linked)
+    print(Maxcore,Mindistance)
